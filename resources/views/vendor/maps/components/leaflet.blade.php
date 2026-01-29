@@ -55,4 +55,7 @@
         tileSize: 512,
         zoomOffset: -1
     }).addTo(mymap);
+
+    var marker = L.marker([51.5, -0.09]).addTo(mymap);
+
 </script>

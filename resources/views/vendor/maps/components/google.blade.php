@@ -31,6 +31,8 @@ class='{{ $attributes["class"] }}'
             zoom: {{$zoomLevel}},
             mapTypeId: '{{$mapType}}'
         });
+        // Expose map globally for external access
+        window.flightMap = map{{$mapId}};
 
     function addInfoWindow(marker, message) {
 
@@ -57,7 +59,11 @@ class='{{ $attributes["class"] }}'
             @if(isset($marker['title']))
             title: "{{ $marker['title'] }}",
             @endif
-            icon: @if(isset($marker['icon']))"{{ $marker['icon']}}" @else null @endif
+            @if(isset($marker['icon']))
+            icon: "{{ $marker['icon'] }}",
+            @else
+            icon: "{{ asset('icons/flight.png') }}",
+            @endif
         });
 
         @if(isset($marker['info']))
@@ -67,11 +73,11 @@ class='{{ $attributes["class"] }}'
         @if($fitToBounds || $centerToBoundsCenter)
         bounds.extend({lat: {{$marker['lat'] ?? $marker[0]}},lng: {{$marker['long'] ?? $marker[1]}}});
         @endif
+        @endforeach
 
         @if($fitToBounds)
         map{{$mapId}}.fitBounds(bounds);
-        @endif        
-        @endforeach
+        @endif
 
         @if($centerToBoundsCenter)
         map{{$mapId}}.setCenter(bounds.getCenter());
