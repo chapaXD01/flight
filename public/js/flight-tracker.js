@@ -161,8 +161,42 @@ function getIconByType(type) {
     return icons.jet || '/icons/jet.png';
 }
 
+function getDirectionFromHeading(heading) {
+    if (!heading && heading !== 0) return 'Unknown';
+    
+    const directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 
+                        'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
+    const index = Math.round(heading / 22.5) % 16;
+    return directions[index];
+}
+
+function formatLastContact(timestamp) {
+    if (!timestamp) return 'N/A';
+    
+    const lastContact = new Date(timestamp * 1000);
+    const now = new Date();
+    const diffSeconds = Math.floor((now - lastContact) / 1000);
+    
+    let timeAgo = '';
+    if (diffSeconds < 60) {
+        timeAgo = `${diffSeconds}s ago`;
+    } else if (diffSeconds < 3600) {
+        const minutes = Math.floor(diffSeconds / 60);
+        timeAgo = `${minutes}m ago`;
+    } else if (diffSeconds < 86400) {
+        const hours = Math.floor(diffSeconds / 3600);
+        timeAgo = `${hours}h ago`;
+    } else {
+        const days = Math.floor(diffSeconds / 86400);
+        timeAgo = `${days}d ago`;
+    }
+    
+    const dateStr = lastContact.toLocaleString();
+    return `${dateStr} (${timeAgo})`;
+}
+
 async function getdata(){
-    const response = await fetch("/plane.json");
+    const response = await fetch("https://opensky-network.org/api/states/all");
     const data = await response.json();
     return data;
 }
@@ -241,6 +275,10 @@ function showFlightInfo(marker, flight) {
     const longitude = flight[5] ? flight[5].toFixed(4) : 'N/A';
     const altitude = flight[7] ? Math.round(flight[7]) : 'N/A';
     const velocity = flight[9] ? Math.round(flight[9]) : 'N/A';
+    const heading = flight[10];
+    const direction = getDirectionFromHeading(heading);
+    const lastContact = flight[4];
+    const lastContactFormatted = formatLastContact(lastContact);
     const verticalRate = flight[11] ? Math.round(flight[11]) : 0;
     const onGround = flight[8];
     
@@ -265,7 +303,11 @@ function showFlightInfo(marker, flight) {
             Lat: ${latitude}°<br>
             Lng: ${longitude}°<br>
             <strong>Altitude:</strong> ${altitude} m<br>
-            <strong>Velocity:</strong> ${velocity} m/s
+            <strong>Velocity:</strong> ${velocity} m/s<br>
+            <strong>Direction:</strong> ${direction}<br>
+            <strong>Heading:</strong> ${heading !== null && heading !== undefined ? Math.round(heading) + '°' : 'N/A'}<br>
+            <strong>Last Contact:</strong><br>
+            <small>${lastContactFormatted}</small>
         </div>
     `;
 
