@@ -432,6 +432,7 @@ function showFlightInfo(marker, flight) {
 function waitForMap() {
     if (window.flightMap) {
         updateFlights();
+        setInterval(updateFlights, 5000);
     } else {
         setTimeout(waitForMap, 100);
     }
