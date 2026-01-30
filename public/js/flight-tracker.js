@@ -66,72 +66,6 @@ let allFlights = [];
 
 let filteredFlights = [];
 
-function createCustomClusterIcon(count) {
-    const size = count < 10 ? 40 : count < 100 ? 50 : 60;
-    const colors = {
-        small: { bg: '#9C27B0', border: '#7B1FA2', text: '#FFFFFF' },
-        medium: { bg: '#E91E63', border: '#C2185B', text: '#FFFFFF' },
-        large: { bg: '#FF5722', border: '#E64A19', text: '#FFFFFF' }
-    };
-    
-    let colorSet;
-    if (count < 10) colorSet = colors.small;
-    else if (count < 100) colorSet = colors.medium;
-    else colorSet = colors.large;
-    
-    const svg = `
-        <svg width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-                <linearGradient id="grad${count}" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" style="stop-color:${colorSet.bg};stop-opacity:1" />
-                    <stop offset="100%" style="stop-color:${colorSet.border};stop-opacity:1" />
-                </linearGradient>
-            </defs>
-            <polygon points="${size/2},${size*0.15} ${size*0.85},${size*0.4} ${size*0.85},${size*0.75} ${size/2},${size*0.9} ${size*0.15},${size*0.75} ${size*0.15},${size*0.4}" 
-                     fill="url(#grad${count})" 
-                     stroke="#FFFFFF" 
-                     stroke-width="2.5"/>
-            <text x="50%" y="50%" 
-                  text-anchor="middle" 
-                  dominant-baseline="central" 
-                  font-family="Arial, sans-serif" 
-                  font-size="${count < 100 ? '14' : '16'}" 
-                  font-weight="bold" 
-                  fill="${colorSet.text}">${count}</text>
-        </svg>
-    `;
-    
-    return {
-        url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg),
-        scaledSize: new google.maps.Size(size, size),
-        anchor: new google.maps.Point(size / 2, size / 2)
-    };
-}
-
-class CustomClusterRenderer {
-    render(cluster, stats, map) {
-        const count = cluster.count;
-        const position = cluster.position;
-        const icon = createCustomClusterIcon(count);
-        
-        return new google.maps.Marker({
-            position,
-            icon: icon,
-            label: {
-                text: String(count),
-                color: '#FFFFFF',
-                fontSize: count < 100 ? '14px' : '16px',
-                fontWeight: 'bold'
-            },
-            zIndex: Number(google.maps.Marker.MAX_ZINDEX) + count,
-            title: `${count} flights`,
-            map: map
-        });
-    }
-}
-
-const customClusterRenderer = new CustomClusterRenderer();
-
 function applyFilters() {
     const filterJets = document.getElementById('filter-jets').checked;
     const filterProps = document.getElementById('filter-props').checked;
@@ -194,8 +128,7 @@ function renderFilteredMarkers() {
         markerCluster.clearMarkers();
         markerCluster = new markerClusterer.MarkerClusterer({
             map: window.flightMap,
-            markers: visibleMarkers,
-            renderer: customClusterRenderer
+            markers: visibleMarkers
         });
     }
 
@@ -374,8 +307,7 @@ async function updateFlights() {
 
     markerCluster = new markerClusterer.MarkerClusterer({
         map: window.flightMap,
-        markers: Object.values(planeMarkers),
-        renderer: customClusterRenderer
+        markers: Object.values(planeMarkers)
     });
 
     console.log("Updated planes:", Object.keys(planeMarkers).length);
