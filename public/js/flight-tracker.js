@@ -321,7 +321,7 @@ function showFlightInfo(marker, flight) {
 function waitForMap() {
     if (window.flightMap) {
         updateFlights();
-        setInterval(updateFlights, 5000);
+        setInterval(updateFlights, 2000);
     } else {
         setTimeout(waitForMap, 100);
     }
