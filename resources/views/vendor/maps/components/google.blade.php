@@ -29,7 +29,11 @@ class='{{ $attributes["class"] }}'
         map{{$mapId}} = new google.maps.Map(document.getElementById("{{$mapId}}"), {
             center: { lat: {{$centerPoint['lat'] ?? $centerPoint[0]}}, lng: {{$centerPoint['long'] ?? $centerPoint[1]}} },
             zoom: {{$zoomLevel}},
-            mapTypeId: '{{$mapType}}'
+            mapTypeId: '{{$mapType}}',
+            fullscreenControl: false,
+            streetViewControl: false,
+            mapTypeControl: false,
+            zoomControl: false
         });
         // Expose map globally for external access
         window.flightMap = map{{$mapId}};
@@ -84,3 +88,6 @@ class='{{ $attributes["class"] }}'
         @endif
     }
 </script>
+<script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
+
+
