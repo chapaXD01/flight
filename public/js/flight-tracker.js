@@ -64,89 +64,6 @@ let markerCluster = null;
 let infoWindow = null;
 let allFlights = [];
 
-let filteredFlights = [];
-
-function applyFilters() {
-    const filterJets = document.getElementById('filter-jets').checked;
-    const filterProps = document.getElementById('filter-props').checked;
-    const filterHelis = document.getElementById('filter-helis').checked;
-    const filterHeavy = document.getElementById('filter-heavy').checked;
-    const minAltitude = parseInt(document.getElementById('filter-altitude').value);
-    const filterEurope = document.getElementById('filter-europe').checked;
-    const filterWorldwide = document.getElementById('filter-worldwide').checked;
-
-    document.getElementById('altitude-display').textContent = minAltitude + 'm';
-
-    filteredFlights = allFlights.filter(flight => {
-        if (!flight[5] || !flight[6]) return false;
-
-        const speed = flight[9] || 0;
-        const altitude = flight[7] || 0;
-        const lat = flight[6];
-
-        let typeMatch = false;
-        if (speed >= 250 && filterHeavy) typeMatch = true;
-        if (speed > 200 && speed < 250 && filterJets) typeMatch = true;
-        if (speed > 80 && speed <= 200 && filterProps) typeMatch = true;
-        if (speed <= 80 && filterHelis) typeMatch = true;
-
-        if (!typeMatch) return false;
-
-        if (altitude < minAltitude) return false;
-
-        const isEurope = lat >= 35 && lat <= 70;
-        if (filterEurope && filterWorldwide) {
-        } else if (filterEurope && !filterWorldwide) {
-            if (!isEurope) return false;
-        } else if (filterWorldwide && !filterEurope) {
-            if (isEurope) return false;
-        } else {
-            return false;
-        }
-
-        return true;
-    });
-
-    renderFilteredMarkers();
-}
-
-function renderFilteredMarkers() {
-    Object.values(planeMarkers).forEach(marker => {
-        marker.setVisible(false);
-    });
-
-    const visibleMarkers = [];
-    filteredFlights.forEach(flight => {
-        const id = flight[0];
-        if (planeMarkers[id]) {
-            planeMarkers[id].setVisible(true);
-            visibleMarkers.push(planeMarkers[id]);
-        }
-    });
-
-    if (markerCluster) {
-        markerCluster.clearMarkers();
-        markerCluster = new markerClusterer.MarkerClusterer({
-            map: window.flightMap,
-            markers: visibleMarkers
-        });
-    }
-
-    console.log("Filtered planes:", visibleMarkers.length);
-}
-
-function resetFilters() {
-    document.getElementById('filter-jets').checked = true;
-    document.getElementById('filter-props').checked = true;
-    document.getElementById('filter-helis').checked = true;
-    document.getElementById('filter-heavy').checked = true;
-    document.getElementById('filter-europe').checked = true;
-    document.getElementById('filter-worldwide').checked = true;
-    document.getElementById('filter-altitude').value = 0;
-
-    applyFilters();
-}
-
 function searchPlane() {
     const searchInput = document.getElementById('search-callsign').value.toUpperCase().trim();
     
@@ -311,8 +228,6 @@ async function updateFlights() {
     });
 
     console.log("Updated planes:", Object.keys(planeMarkers).length);
-
-    applyFilters();
 }
 
 function showFlightInfo(marker, flight) {

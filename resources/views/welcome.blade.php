@@ -9,56 +9,6 @@
 <body class="light-mode">
     <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙 Dark Mode</button>
     
-    <div class="filter-panel">
-        <h3>🔧 Filter Planes</h3>
-        
-        <div class="filter-section">
-            <label class="filter-label">Aircraft Type</label>
-            <div class="checkbox-group">
-                <div class="checkbox-item">
-                    <input type="checkbox" id="filter-jets" checked onchange="applyFilters()">
-                    <label for="filter-jets">✈️ Jets</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="filter-props" checked onchange="applyFilters()">
-                    <label for="filter-props">🚁 Props</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="filter-helis" checked onchange="applyFilters()">
-                    <label for="filter-helis">🛩️ Helicopters</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="filter-heavy" checked onchange="applyFilters()">
-                    <label for="filter-heavy">🛫 Heavy</label>
-                </div>
-            </div>
-        </div>
-
-        <div class="filter-section">
-            <label class="filter-label">Minimum Altitude (m)</label>
-            <input type="range" id="filter-altitude" min="0" max="15000" step="500" value="0" class="filter-slider" onchange="applyFilters()">
-            <div class="altitude-info">
-                <span id="altitude-display">0m</span> and above
-            </div>
-        </div>
-
-        <div class="filter-section">
-            <label class="filter-label">Region</label>
-            <div class="checkbox-group">
-                <div class="checkbox-item">
-                    <input type="checkbox" id="filter-europe" checked onchange="applyFilters()">
-                    <label for="filter-europe">🇪🇺 Europe</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="filter-worldwide" checked onchange="applyFilters()">
-                    <label for="filter-worldwide">🌍 Worldwide</label>
-                </div>
-            </div>
-        </div>
-
-        <button class="filter-btn" onclick="resetFilters()">Reset Filters</button>
-    </div>
-    
     <div class="stats-panel">
         <h3>✈️ Live Flight Stats</h3>
         <div class="search-section">
